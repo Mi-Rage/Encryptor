@@ -23,28 +23,45 @@ public class Encryptor {
         String filePathIn = "";// По умолчанию путь к файлу чтения пустой.
         String filePathOut = "";// По умолчанию путь к файлу записи пустой.
 
-        if(args.length == 0){
-            System.out.println("Error : Args is NULL");
+        if (args.length == 0) {
+            System.out.println("Error : Используй аргументы -mode -key -in -out");
         }
 
-        for(int i = 0; i < args.length; i++){
-            if(args[i].equals("-mode")){
-                mode = args[i + 1];
-            }
-            if(args[i].equals("-key")){
-                shift = Integer.parseInt(args[i + 1]);
-            }
-            if(args[i].equals("-data")){
-                buf = args[i + 1];
-            }
-            if(args[i].equals("-in")){
-                filePathIn = args[i + 1];
-            }
-            if(args[i].equals("-out")){
-                filePathOut = args[i + 1];
+        for (int i = 0; i < args.length; i++) {
+            switch (args[i]) {
+                case "-mode":
+                    if (i + 1 == args.length || args[i + 1].startsWith("-")) {
+                        System.out.println("Error : Нет значения для ключа -mode");
+                    } else if (!args[i + 1].equals("enc") && !args[i + 1].equals("dec")) {
+                        System.out.println("Error : Неверный параметр " + args[i + 1] + " для -mode");
+                    }
+                    mode = args[i + 1];
+                    break;
+                case "-key":
+                    if (i + 1 == args.length || args[i + 1].startsWith("-")) {
+                        System.out.println("Error : Нет значения для ключа -key");
+                    } else if (!args[i + 1].matches("[0-9]+")) {
+                        System.out.println("Error : Ключ сдвига должен состоять только из цифр!");
+                    }
+                    shift = Integer.parseInt(args[i + 1]);
+                    break;
+                case "-in":
+                    if (i + 1 == args.length || args[i + 1].startsWith("-")) {
+                        System.out.println("Error : Нет значения для ключа -in");
+                    }
+                    filePathIn = args[i + 1];
+                    break;
+                case "-out":
+                    if (i + 1 == args.length || args[i + 1].startsWith("-")) {
+                        System.out.println("Error : Нет значения для ключа -out");
+                    }
+                    filePathOut = args[i + 1];
+                    break;
+                default:
+                    System.out.println("Error : Не выявлено правильных аргументов");
+                    break;
             }
         }
-
 
         // Полученный аргумент -data переводим в массив символов
         char[] chars = buf.toCharArray();
@@ -55,17 +72,17 @@ public class Encryptor {
 
         switch (mode) {
             case "enc":
-                if(isDataAndIn){                                    // Если есть и -data и -in
+                if (isDataAndIn) {                                    // Если есть и -data и -in
                     System.out.println(encrypt(chars, shift));      // в приоритете -data
                     break;
-                } else if(isNoDataYesIn){                           // Нет -data есть -in
+                } else if (isNoDataYesIn) {                           // Нет -data есть -in
                     try {
                         buf = readInFile(filePathIn);               // Читаем файл
                     } catch (IOException e) {
                         System.out.println("Error : Cannot read file: " + e.getMessage());
                     }
                     char[] charsFileEnc = buf.toCharArray();
-                    if(isNoFileOut){
+                    if (isNoFileOut) {
                         writeOutFile(filePathOut, encrypt(charsFileEnc, shift)); // Если есть -out то пишем в файл
                     } else {
                         System.out.println(encrypt(charsFileEnc, shift)); // Если нет -out то выводим в консоль
@@ -74,17 +91,17 @@ public class Encryptor {
                 break;
 
             case "dec":
-                if(isDataAndIn){                                    // Если есть и -data и -in
+                if (isDataAndIn) {                                    // Если есть и -data и -in
                     System.out.println(decrypt(chars, shift));      // в приоритете -data
                     break;
-                } else if(isNoDataYesIn){                           // Нет -data есть -in
+                } else if (isNoDataYesIn) {                           // Нет -data есть -in
                     try {
                         buf = readInFile(filePathIn);               // Читаем файл
                     } catch (IOException e) {
                         System.out.println("Error : Cannot read file: " + e.getMessage());
                     }
                     char[] charsFileDec = buf.toCharArray();
-                    if(isNoFileOut){
+                    if (isNoFileOut) {
                         writeOutFile(filePathOut, decrypt(charsFileDec, shift)); // Если есть -out то пишем в файл
                     } else {
                         System.out.println(decrypt(charsFileDec, shift)); // Если нет -out то выводим в консоль
@@ -139,7 +156,7 @@ public class Encryptor {
     }
 
     // Пишем в файл
-    public static void writeOutFile(String filePathOut, String decString){
+    public static void writeOutFile(String filePathOut, String decString) {
         File file = new File(filePathOut);
         try (PrintWriter printWriter = new PrintWriter(file)) {
             printWriter.println(decString); // Пишем в файл полученную зашифрованную строку
@@ -147,7 +164,6 @@ public class Encryptor {
             System.out.printf("Error : An exception occurs %s", e.getMessage());
         }
     }
-
 
 
 }
