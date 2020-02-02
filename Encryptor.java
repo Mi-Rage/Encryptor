@@ -63,6 +63,7 @@ public class Encryptor {
             }
         }
 
+
         // Полученный аргумент -data переводим в массив символов
         char[] chars = buf.toCharArray();
 
