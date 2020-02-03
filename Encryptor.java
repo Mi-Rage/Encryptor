@@ -57,6 +57,12 @@ public class Encryptor {
                     }
                     filePathOut = args[i + 1];
                     break;
+                case "-data":
+                    if (i + 1 == args.length || args[i + 1].startsWith("-")) {
+                        System.out.println("Error : Нет значения для ключа -data");
+                    }
+                    buf = args[i + 1];
+                    break;
                 default:
                     System.out.println("Error : Не выявлено правильных аргументов");
                     break;
