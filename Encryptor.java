@@ -109,23 +109,33 @@ public class Encryptor {
      * @param mode - режим работы, шифровать или расшифровать
      * @return зашифрованная или расшифрованная в зависимости от mode строка
      */
-        private static String crypto (String buf, int shift, String mode, String alg){
+        private static String crypto (String buf, int shift, String mode, String alg) {
+
             StringBuilder outString = new StringBuilder(); // Выходящая строка по умолчанию
-            char start = 32;    // Первый символ ASCII
-            char finish = 127;  // Последний символ ASCII
-            int size = 96;      // К-во символов в таблице ASCII
+
+            char startUnicode = 32;    // Первый символ ASCII
+            char finishUnicode = 127;  // Последний символ ASCII
+            int sizeUnicode = 96;      // К-во символов в таблице ASCII
+
+            char startSiftBig = 65;    // Первый заглавный символ для shift
+            char finishShiftBig = 90;  // Последний заглавный символ для shift
+            int sizeShift = 26;      // К-во символов в алфавите для shift
+
+            char startSiftSmall = 97;    // Первый строчный символ для shift
+            char finishShiftSmall = 122;  // Последний строчный символ для shift
+
 
             // Полученный аргумент для шифрования переводим в массив символов
             char[] chars = buf.toCharArray();
 
             for (char item : chars) {
-                if(alg.equals("unicode")){
-                    if (item >= start && item <= finish) {
+                if (alg.equals("unicode")) {
+                    if (item >= startUnicode && item <= finishUnicode) {
                         if (mode.equals("enc")) {
-                            char shiftItem = (char) (((item - start + shift) % size) + start);
+                            char shiftItem = (char) (((item - startUnicode + shift) % sizeUnicode) + startUnicode);
                             outString.append(shiftItem);
                         } else if (mode.equals("dec")) {
-                            char shiftItem = (char) (finish - (finish - item + shift) % size);
+                            char shiftItem = (char) (finishUnicode - (finishUnicode - item + shift) % sizeUnicode);
                             outString.append(shiftItem);
                         } else {
                             System.out.println("Error : Неверное значение ключа -mode");
@@ -135,23 +145,23 @@ public class Encryptor {
                         outString.append(item);
                     }
                 } else if (alg.equals("shift")) {
-                    if (item >= 65 && item <= 90) {
+                    if (item >= startSiftBig && item <= finishShiftBig) {
                         if (mode.equals("enc")) {
-                            char shiftItem = (char) (((item - 65 + shift) % 26) + 65);
+                            char shiftItem = (char) (((item - startSiftBig + shift) % sizeShift) + startSiftBig);
                             outString.append(shiftItem);
                         } else if (mode.equals("dec")) {
-                            char shiftItem = (char) (finish - (90 - item + shift) % 26);
+                            char shiftItem = (char) (finishShiftBig - (finishShiftBig - item + shift) % sizeShift);
                             outString.append(shiftItem);
                         } else {
                             System.out.println("Error : Неверное значение ключа -mode");
                             break;
                         }
-                    } else if (item >= 97 && item <= 122) {
+                    } else if (item >= startSiftSmall && item <= finishShiftSmall) {
                         if (mode.equals("enc")) {
-                            char shiftItem = (char) (((item - 97 + shift) % 26) + 97);
+                            char shiftItem = (char) (((item - startSiftSmall + shift) % sizeShift) + startSiftSmall);
                             outString.append(shiftItem);
                         } else if (mode.equals("dec")) {
-                            char shiftItem = (char) (finish - (122 - item + shift) % 26);
+                            char shiftItem = (char) (finishShiftSmall - (finishShiftSmall - item + shift) % sizeShift);
                             outString.append(shiftItem);
                         } else {
                             System.out.println("Error : Неверное значение ключа -mode");
@@ -165,42 +175,6 @@ public class Encryptor {
             }
             return outString.toString(); // Возвращаем зашифрованную строку
         }
-
-//    // Шифруем
-//    private static String encrypt(char[] chars, int shift) {
-//        StringBuilder encString = new StringBuilder(); // Защифрованная строка по умолчанию
-//        char start = 32;    // Первый символ ASCII
-//        char finish = 127;  // Последний символ ASCII
-//        int size = 96;      // К-во символов в таблице ASCII
-//
-//        for (char item : chars) {
-//            if (item >= start && item <= finish) {
-//                char shiftItem = (char) (((item - start + shift) % size) + start);
-//                encString.append(shiftItem);
-//            } else {
-//                encString.append(item);
-//            }
-//        }
-//        return encString.toString(); // Возвращаем зашифрованную строку
-//    }
-//
-//    // Расшифровываем
-//    private static String decrypt(char[] chars, int shift) {
-//        StringBuilder decString = new StringBuilder(); // Расшифрованная строка по умолчанию
-//        char start = 32;        // Первый символ ASCII
-//        char finish = 127;      // Последний символ ASCII
-//        int size = 96;          // К-во символов в таблице ASCII
-//
-//        for (char item : chars) {
-//            if (item >= start && item <= finish) {
-//                char shiftItem = (char) (finish - (finish - item + shift) % size);
-//                decString.append(shiftItem);
-//            } else {
-//                decString.append(item);
-//            }
-//        }
-//        return decString.toString(); // Возвращаем расшифрованную строку
-//    }
 
         // Читаем файл
         public static String readInFile (String filePathIn) throws IOException {
