@@ -190,7 +190,5 @@ public class Encryptor {
                 System.out.printf("Error : An exception occurs %s", e.getMessage());
             }
         }
-
-
     }
 
