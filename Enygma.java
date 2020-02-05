@@ -164,7 +164,6 @@ class Crypto implements Closeable {
                     outString.append(item);
                 }
             }
-
         }
         return outString.toString(); // Возвращаем зашифрованную строку
     }
@@ -186,6 +185,4 @@ class Crypto implements Closeable {
         this.output.println(enygma());
 
     }
-
-
 }
