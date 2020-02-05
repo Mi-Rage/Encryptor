@@ -171,7 +171,6 @@ public class Encryptor {
                         outString.append(item);
                     }
                 }
-
             }
             return outString.toString(); // Возвращаем зашифрованную строку
         }
